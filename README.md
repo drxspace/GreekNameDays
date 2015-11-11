@@ -21,7 +21,7 @@ Orthodox Namedays retrieval and presentation -- bash script
 ```bash
 	sudo -v
 	
-	sudo -H rm -rf /usr/share/applicationsgreeknamedays.desktop
+	sudo -H rm -fv /usr/share/applicationsgreeknamedays.desktop
 	sudo -H rm -fv /usr/share/pixmaps/Christian-cross.png
 	sudo -H rm -fv /usr/local/bin/greeknamedays
 
