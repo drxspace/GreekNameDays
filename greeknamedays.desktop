@@ -9,5 +9,5 @@ GenericName=Greek NameDays retrieval and presentation tool, version 0.1.0
 GenericName[el]=Εργαλείο ανάκτησης και παρουσίασης Ελληνικών ονομαστικών εορτών, έκδοση 0.1.0
 Exec=greeknamedays
 Icon=Christian-cross
-Categories=Accessories;Education;
+Categories=Education;Presentation;
 StartupNotify=false
