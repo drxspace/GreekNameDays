@@ -10,9 +10,9 @@
 #set -e
 Encoding=UTF-8
 # The directory this script resides
-scriptDir="$(dirname "$0")"
+#scriptDir="$(dirname "$0")"
 # Store temporary data in this directory
-cacheDir="$HOME/.cache/NameDay"
+cacheDir="$HOME/.cache/NameDays"
 
 # Getting access to the display
 if [[ -z "$DISPLAY" ]]; then
@@ -92,7 +92,7 @@ TomorrowNames=$(ColorWrapNames "$(sed -n '/αύριο/s/^.*: \(.*\) (πηγή.*/
 yad --width=400 \
     --center \
     --timeout=20 \
-    --timeout-indicator=left \
+    --timeout-indicator=top \
     --title=$"Ελληνικές Ονομαστικές Εορτές" \
     --window-icon=Christian-cross \
     --image=Christian-cross \
