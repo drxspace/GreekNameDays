@@ -92,7 +92,7 @@ TomorrowNames=$(ColorWrapNames "$(sed -n '/αύριο/s/^.*: \(.*\) (πηγή.*/
 yad --width=400 \
     --center \
     --timeout=20 \
-    --timeout-indicator=top \
+    --timeout-indicator=left \
     --title=$"Ελληνικές Ονομαστικές Εορτές" \
     --window-icon=Christian-cross \
     --image=Christian-cross \
