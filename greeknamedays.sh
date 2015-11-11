@@ -94,7 +94,7 @@ yad --width=400 \
     --timeout=20 \
     --timeout-indicator=left \
     --title=$"Ελληνικές Ονομαστικές Εορτές" \
-    --image=cross \
+    --image=Christian-cross \
     --buttons-layout=center \
     --button=Κλείσιμο \
     --text=$"<span color='blue' font_size='medium' font_weight='bold'>Σήμερα:</span>\n${TodayNames}
