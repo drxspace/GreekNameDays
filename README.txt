@@ -1,24 +1,32 @@
 ﻿GreekNameDays
 
-Orthodox Namedays retrieval and presentation -- bash script
+Orthodox Namedays retrieval and presentation tool
+
+
+Description
+
+GreekNameDays is a bash script that fetches the names of those who celebrate
+today and tomorrow from the site www.eortologio.gr and presents them on the
+desktop using the graphical tool YAD.
+
 
 Installation
 
 All
 
-    sudo -v
-
-    sudo -H cp -fv Christian-cross.png /usr/share/pixmaps/
-    sudo -H cp -fv greeknamedays.sh /usr/local/bin/greeknamedays
-    sudo -H desktop-file-install greeknamedays.desktop
+sudo -H sh -c '
+	cp -fv Christian-cross.png /usr/share/pixmaps/
+	cp -fv greeknamedays.sh /usr/local/bin/greeknamedays
+	desktop-file-install greeknamedays.desktop
+'
 
 Uninstallation
 
 All
 
-    sudo -v
-
-    sudo -H rm -fv /usr/share/applicationsgreeknamedays.desktop
-    sudo -H rm -fv /usr/share/pixmaps/Christian-cross.png
-    sudo -H rm -fv /usr/local/bin/greeknamedays
+sudo -H sh -c '
+	rm -fv /usr/share/applicationsgreeknamedays.desktop
+	rm -fv /usr/share/pixmaps/Christian-cross.png
+	rm -fv /usr/local/bin/greeknamedays
+'
 
