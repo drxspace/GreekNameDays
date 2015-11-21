@@ -3,10 +3,12 @@ Orthodox Namedays retrieval and presentation tool
 
 ## Description
 GreekNameDays is a bash script that fetches the names of those who celebrate
-today and tomorrow from the site [www.eortologio.gr] and presents them on the
-desktop using the graphical tool [YAD].
+today, tomorrow and the day after tomorrow from the site [www.eortologio.gr] and
+presents them on the desktop using the graphical tool [YAD].
 
 ## Installation
+Download and extract the zip file, open in terminal (navigate to) this directory
+and issue the command below.
 
 ### All
 
@@ -19,6 +21,7 @@ sudo -H sh -c '
 ```
 
 ## Uninstallation
+Open terminal and issue the command below.
 
 ### All
 

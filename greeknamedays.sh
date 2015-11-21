@@ -8,6 +8,7 @@
 #                                    /_/           drxspace@gmail.com
 #
 #set -e
+
 Encoding=UTF-8
 # The directory this script resides
 #scriptDir="$(dirname "$0")"
@@ -47,7 +48,7 @@ yad --image=info \
     --height=80 \
     --center \
     --no-buttons \
-    --timeout=20 \
+    --timeout=30 \
     --timeout-indicator=bottom \
     --title=$"Ελληνικές Ονομαστικές Εορτές" \
     --text=$"Γίνεται ανάκτηση τυχόν ονομάτων από τον ιστότοπο <a href='http://www.eortologio.gr/'>www.eortologio.gr</a>
@@ -56,10 +57,10 @@ INFOpid=$(echo $!)
 
 touch "${cacheDir}/names"
 
-secs=21					# Set interval (duration) in seconds.
+secs=31					# Set interval (duration) in seconds.
 endTime=$(( $(date +%s) + secs ))	# Calculate end time.
 while [[ ! -s "${cacheDir}/names" ]] && [[ $(date +%s) -lt $endTime ]]; do
-	wget -q -N -4 -O "${cacheDir}/names" http://www.eortologio.gr/rss/si_av_el.xml;
+	wget -q -N -4 -O "${cacheDir}/names" http://www.eortologio.gr/rss/si_av_me_el.xml;
 done
 
 eval 'kill -15 ${INFOpid}' &> /dev/null
@@ -82,12 +83,15 @@ eval 'kill -15 ${INFOpid}' &> /dev/null
 iconv -f ISO-8859-7 -t UTF-8 "${cacheDir}/names" | \
 sed 's/>[:space:]*</>\n</g' | \
 sed '/<item>/,/<\/item>/!d' | \
-sed -n -e 's/.*<title>\(.*\)<\/title>.*/\1/p' > "${cacheDir}"/namedays.xml
+sed -n 's/.*<title>\(.*\)<\/title>.*/\1/p' > "${cacheDir}"/namedays.xml
 
 WDITD="$(sed -n '/σήμερα/s/σήμερα[[:space:]]\(.[^:]*\)[[:space:]].*/\1/p' "${cacheDir}"/namedays.xml)"
-WDITM="$(sed -n '/αύριο/s/αύριο[[:space:]]\(.[^:]*\)[[:space:]].*/\1/p' "${cacheDir}"/namedays.xml)"
+WDITM="$(sed -n '/^αύριο/s/αύριο[[:space:]]\(.[^:]*\)[[:space:]].*/\1/p' "${cacheDir}"/namedays.xml)"
+WDIDATM="$(sed -n '/μεθαύριο/s/μεθαύριο[[:space:]]\(.[^:]*\)[[:space:]].*/\1/p' "${cacheDir}"/namedays.xml)"
+
 TodayNames=$(ColorWrapNames "$(sed -n '/σήμερα/s/^.*: \(.*\) (πηγή.*/\1/p' "${cacheDir}"/namedays.xml)")
-TomorrowNames=$(ColorWrapNames "$(sed -n '/αύριο/s/^.*: \(.*\) (πηγή.*/\1/p' "${cacheDir}"/namedays.xml)")
+TomorrowNames=$(ColorWrapNames "$(sed -n '/^αύριο/s/^.*: \(.*\) (πηγή.*/\1/p' "${cacheDir}"/namedays.xml)")
+DayAfterTomorrowNames=$(ColorWrapNames "$(sed -n '/μεθαύριο/s/^.*: \(.*\) (πηγή.*/\1/p' "${cacheDir}"/namedays.xml)")
 
 yad --width=400 \
     --center \
@@ -100,8 +104,10 @@ yad --width=400 \
     --button=Κλείσιμο \
     --text=$"<span color='blue' font_size='medium' font_weight='bold'>Σήμερα ${WDITD}</span>\n${TodayNames}
 
-<span color='blue' font_size='medium' font_weight='bold'>Αύριο ${WDITM}</span>\n${TomorrowNames}\
-$([[ "${WDITD}" =~ "$(date +"%a")" ]] || echo -en "\n\n<span color='red' underline='error'>Πιθανό πρόβλημα. Ασύμπτωτες ημερομηνίες...</span>")"
+<span color='blue' font_size='medium' font_weight='bold'>Αύριο ${WDITM}</span>\n${TomorrowNames}
+
+<span color='blue' font_size='medium' font_weight='bold'>Μεθαύριο ${WDIDATM}</span>\n${DayAfterTomorrowNames}\
+$([[ "${WDITD}" =~ "$(date +"%a")" ]] || echo -en "\n\n<span color='red' underline='error'>Πιθανό πρόβλημα. Ασύμπτωτες ημερομηνίες!</span>")"
 
 CleanUp
 
