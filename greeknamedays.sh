@@ -14,7 +14,6 @@ Encoding=UTF-8
 #scriptDir="$(dirname "$0")"
 # Store temporary data in this directory
 cacheDir="$HOME/.cache/NameDays"
-
 # Getting access to the display
 if [[ -z "$DISPLAY" ]]; then
 	export DISPLAY=$(/bin/ps -Afl | /bin/grep Xorg | /bin/grep -v grep | /usr/bin/awk '{print $16 ".0"}');
@@ -48,7 +47,7 @@ yad --image=info \
     --height=80 \
     --center \
     --no-buttons \
-    --timeout=30 \
+    --timeout=20 \
     --timeout-indicator=bottom \
     --title=$"Ελληνικές Ονομαστικές Εορτές" \
     --text=$"Γίνεται ανάκτηση τυχόν ονομάτων από τον ιστότοπο <a href='http://www.eortologio.gr/'>www.eortologio.gr</a>
@@ -57,7 +56,7 @@ INFOpid=$(echo $!)
 
 touch "${cacheDir}/names"
 
-secs=31					# Set interval (duration) in seconds.
+secs=1					# Set interval (duration) in seconds.
 endTime=$(( $(date +%s) + secs ))	# Calculate end time.
 while [[ ! -s "${cacheDir}/names" ]] && [[ $(date +%s) -lt $endTime ]]; do
 	wget -q -N -4 -O "${cacheDir}/names" http://www.eortologio.gr/rss/si_av_me_el.xml;
@@ -95,7 +94,7 @@ DayAfterTomorrowNames=$(ColorWrapNames "$(sed -n '/μεθαύριο/s/^.*: \(.*\
 
 yad --width=400 \
     --center \
-    --timeout=20 \
+    --timeout=60 \
     --timeout-indicator=left \
     --title=$"Ελληνικές Ονομαστικές Εορτές" \
     --window-icon=Christian-cross \
