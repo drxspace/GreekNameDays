@@ -59,8 +59,7 @@ touch "${cacheDir}/names"
 secs=21					# Set interval (duration) in seconds.
 endTime=$(( $(date +%s) + secs ))	# Calculate end time.
 while [[ ! -s "${cacheDir}/names" ]] && [[ $(date +%s) -lt $endTime ]]; do
-	wget -q -N -4 -O "${cacheDir}/names" http://www.eortologio.gr/rss/si_av_el.xml; #… &
-	#wait $! # Wait for all background processes to finish before proceeding
+	wget -q -N -4 -O "${cacheDir}/names" http://www.eortologio.gr/rss/si_av_el.xml;
 done
 
 eval 'kill -15 ${INFOpid}' &> /dev/null
@@ -85,8 +84,9 @@ sed 's/>[:space:]*</>\n</g' | \
 sed '/<item>/,/<\/item>/!d' | \
 sed -n -e 's/.*<title>\(.*\)<\/title>.*/\1/p' > "${cacheDir}"/namedays.xml
 
+WDITD="$(sed -n '/σήμερα/s/σήμερα[[:space:]]\(.[^:]*\)[[:space:]].*/\1/p' "${cacheDir}"/namedays.xml)"
+WDITM="$(sed -n '/αύριο/s/αύριο[[:space:]]\(.[^:]*\)[[:space:]].*/\1/p' "${cacheDir}"/namedays.xml)"
 TodayNames=$(ColorWrapNames "$(sed -n '/σήμερα/s/^.*: \(.*\) (πηγή.*/\1/p' "${cacheDir}"/namedays.xml)")
-
 TomorrowNames=$(ColorWrapNames "$(sed -n '/αύριο/s/^.*: \(.*\) (πηγή.*/\1/p' "${cacheDir}"/namedays.xml)")
 
 yad --width=400 \
@@ -98,9 +98,10 @@ yad --width=400 \
     --image=Christian-cross \
     --buttons-layout=center \
     --button=Κλείσιμο \
-    --text=$"<span color='blue' font_size='medium' font_weight='bold'>Σήμερα:</span>\n${TodayNames}
+    --text=$"<span color='blue' font_size='medium' font_weight='bold'>Σήμερα ${WDITD}</span>\n${TodayNames}
 
-<span color='blue' font_size='medium' font_weight='bold'>Αύριο:</span>\n${TomorrowNames}"
+<span color='blue' font_size='medium' font_weight='bold'>Αύριο ${WDITM}</span>\n${TomorrowNames}\
+$([[ "${WDITD}" =~ "$(date +"%a")" ]] || echo -en "\n\n<span color='red' underline='error'>Πιθανό πρόβλημα. Ασύμπτωτες ημερομηνίες...</span>")"
 
 CleanUp
 
