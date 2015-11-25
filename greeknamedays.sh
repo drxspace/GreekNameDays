@@ -22,6 +22,12 @@ if [[ -z "$XAUTHORITY" ]] && [[ -e "$HOME/.Xauthority" ]]; then
 	export XAUTHORITY="$HOME/.Xauthority";
 fi
 
+# Prerequisites
+	[[ -x $(which yad) ]] || {
+		notify-send "Greek NameDays" "yad command is missing\nUse sudo apt-get install yad to install it" -i face-embarrassed;
+		exit 1;
+	}
+
 # ColorWrapNames function
 ColorWrapNames () {
 	if [[ $(grep "δεν υπάρχει μια" <<< "${1}" 2> /dev/null) ]]; then
@@ -76,7 +82,7 @@ eval 'kill -15 ${INFOpid}' &> /dev/null
 
 Παρακαλώ ελέγξτε τη σύνδεσή σας στο διαδίκτυο και/ή δοκιμάστε αργότερα..."
 	CleanUp;
-	exit 1;
+	exit 2;
 }
 
 iconv -f ISO-8859-7 -t UTF-8 "${cacheDir}/names" | \

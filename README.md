@@ -6,6 +6,9 @@ GreekNameDays is a bash script that fetches the names of those who celebrate
 today, tomorrow and the day after tomorrow from the site [www.eortologio.gr] and
 presents them on the desktop using the graphical tool [YAD].
 
+## Prerequisites
+As recent as possible version of graphical tool [YAD].
+
 ## Installation
 Download and extract the zip file, open in terminal (navigate to) this directory
 and issue the command below.
