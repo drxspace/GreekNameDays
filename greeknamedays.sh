@@ -23,10 +23,10 @@ if [[ -z "$XAUTHORITY" ]] && [[ -e "$HOME/.Xauthority" ]]; then
 fi
 
 # Prerequisites
-	[[ -x $(which yad) ]] || {
-		notify-send "Greek NameDays" "yad command is missing\nUse sudo apt-get install yad to install it" -i face-embarrassed;
-		exit 1;
-	}
+[[ -x $(which yad) ]] || {
+	notify-send "Greek NameDays" "yad command is missing\nUse sudo apt-get install yad to install it" -i face-embarrassed;
+	exit 1;
+}
 
 # ColorWrapNames function
 ColorWrapNames () {
@@ -55,7 +55,7 @@ yad --image=info \
     --no-buttons \
     --timeout=20 \
     --timeout-indicator=bottom \
-    --title=$"Ελληνικές Ονομαστικές Εορτές" \
+    --title=$"Ελληνικές Ονομαστικές Εορτές, εκδ. 0.2.4" \
     --text=$"Γίνεται ανάκτηση τυχόν ονομάτων από τον ιστότοπο <a href='http://www.eortologio.gr/'>www.eortologio.gr</a>
 Παρακαλώ περιμένετε..." &
 INFOpid=$(echo $!)
@@ -77,7 +77,7 @@ eval 'kill -15 ${INFOpid}' &> /dev/null
 	    --center \
 	    --buttons-layout=center \
 	    --button=Κλείσιμο \
-	    --title=$"Ελληνικές Ονομαστικές Εορτές" \
+	    --title=$"Ελληνικές Ονομαστικές Εορτές, εκδ. 0.2.4" \
 	    --text=$"Η ανάκτηση τυχόν ονομάτων από τον ιστότοπο <a href='http://www.eortologio.gr/'>www.eortologio.gr</a> δεν κατέστη δυνατή.
 
 Παρακαλώ ελέγξτε τη σύνδεσή σας στο διαδίκτυο και/ή δοκιμάστε αργότερα..."
@@ -102,7 +102,7 @@ yad --width=400 \
     --center \
     --timeout=60 \
     --timeout-indicator=left \
-    --title=$"Ελληνικές Ονομαστικές Εορτές" \
+    --title=$"Ελληνικές Ονομαστικές Εορτές, εκδ. 0.2.4" \
     --window-icon=Christian-cross \
     --image=Christian-cross \
     --buttons-layout=center \
