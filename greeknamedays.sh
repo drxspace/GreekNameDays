@@ -9,6 +9,8 @@
 #
 #set -e
 
+version='0.2.5'
+
 Encoding=UTF-8
 # The directory this script resides
 #scriptDir="$(dirname "$0")"
@@ -55,7 +57,7 @@ yad --image=info \
     --no-buttons \
     --timeout=20 \
     --timeout-indicator=bottom \
-    --title=$"Ελληνικές Ονομαστικές Εορτές, εκδ. 0.2.4" \
+    --title=$"Ελληνικές Ονομαστικές Εορτές, έκδ. ${version}" \
     --text=$"Γίνεται ανάκτηση τυχόν ονομάτων από τον ιστότοπο <a href='http://www.eortologio.gr/'>www.eortologio.gr</a>
 Παρακαλώ περιμένετε..." &
 INFOpid=$(echo $!)
@@ -77,7 +79,7 @@ eval 'kill -15 ${INFOpid}' &> /dev/null
 	    --center \
 	    --buttons-layout=center \
 	    --button=Κλείσιμο \
-	    --title=$"Ελληνικές Ονομαστικές Εορτές, εκδ. 0.2.4" \
+	    --title=$"Ελληνικές Ονομαστικές Εορτές, έκδ. ${version}" \
 	    --text=$"Η ανάκτηση τυχόν ονομάτων από τον ιστότοπο <a href='http://www.eortologio.gr/'>www.eortologio.gr</a> δεν κατέστη δυνατή.
 
 Παρακαλώ ελέγξτε τη σύνδεσή σας στο διαδίκτυο και/ή δοκιμάστε αργότερα..."
@@ -98,11 +100,11 @@ TodayNames=$(ColorWrapNames "$(sed -n '/σήμερα/s/^.*: \(.*\) (πηγή.*/\
 TomorrowNames=$(ColorWrapNames "$(sed -n '/^αύριο/s/^.*: \(.*\) (πηγή.*/\1/p' "${cacheDir}"/namedays.xml)")
 DayAfterTomorrowNames=$(ColorWrapNames "$(sed -n '/μεθαύριο/s/^.*: \(.*\) (πηγή.*/\1/p' "${cacheDir}"/namedays.xml)")
 
-yad --width=400 \
+yad --width=500 \
     --center \
     --timeout=60 \
     --timeout-indicator=left \
-    --title=$"Ελληνικές Ονομαστικές Εορτές, εκδ. 0.2.4" \
+    --title=$"Ελληνικές Ονομαστικές Εορτές, έκδ. ${version}" \
     --window-icon=Christian-cross \
     --image=Christian-cross \
     --buttons-layout=center \

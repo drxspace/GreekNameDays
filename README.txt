@@ -20,6 +20,7 @@ sudo -H sh -c '
 	desktop-file-install greeknamedays.desktop
 '
 
+
 Uninstallation
 
 All
