@@ -9,20 +9,23 @@
 #
 #set -e
 
-version='0.2.5'
+version='0.2.6'
 
 Encoding=UTF-8
+
 # The directory this script resides
 #scriptDir="$(dirname "$0")"
+
 # Store temporary data in this directory
 cacheDir="$HOME/.cache/NameDays"
+
 # Getting access to the display
-if [[ -z "$DISPLAY" ]]; then
-	export DISPLAY=$(/bin/ps -Afl | /bin/grep Xorg | /bin/grep -v grep | /usr/bin/awk '{print $16 ".0"}');
-fi
-if [[ -z "$XAUTHORITY" ]] && [[ -e "$HOME/.Xauthority" ]]; then
-	export XAUTHORITY="$HOME/.Xauthority";
-fi
+#if [[ -z "$DISPLAY" ]]; then
+#	export DISPLAY=$(/bin/ps -Afl | /bin/grep Xorg | /bin/grep -v grep | /usr/bin/awk '{print $16 ".0"}');
+#fi
+#if [[ -z "$XAUTHORITY" ]] && [[ -e "$HOME/.Xauthority" ]]; then
+#	export XAUTHORITY="$HOME/.Xauthority";
+#fi
 
 # Prerequisites
 [[ -x $(which yad) ]] || {
@@ -92,28 +95,28 @@ sed 's/>[:space:]*</>\n</g' | \
 sed '/<item>/,/<\/item>/!d' | \
 sed -n 's/.*<title>\(.*\)<\/title>.*/\1/p' > "${cacheDir}"/namedays.xml
 
-WDITD="$(sed -n '/σήμερα/s/σήμερα[[:space:]]\(.[^:]*\)[[:space:]].*/\1/p' "${cacheDir}"/namedays.xml)"
+WDITD="$(sed -n '/^σήμερα/s/σήμερα[[:space:]]\(.[^:]*\)[[:space:]].*/\1/p' "${cacheDir}"/namedays.xml)"
 WDITM="$(sed -n '/^αύριο/s/αύριο[[:space:]]\(.[^:]*\)[[:space:]].*/\1/p' "${cacheDir}"/namedays.xml)"
-WDIDATM="$(sed -n '/μεθαύριο/s/μεθαύριο[[:space:]]\(.[^:]*\)[[:space:]].*/\1/p' "${cacheDir}"/namedays.xml)"
+WDIDATM="$(sed -n '/^μεθαύριο/s/μεθαύριο[[:space:]]\(.[^:]*\)[[:space:]].*/\1/p' "${cacheDir}"/namedays.xml)"
 
-TodayNames=$(ColorWrapNames "$(sed -n '/σήμερα/s/^.*: \(.*\) (πηγή.*/\1/p' "${cacheDir}"/namedays.xml)")
-TomorrowNames=$(ColorWrapNames "$(sed -n '/^αύριο/s/^.*: \(.*\) (πηγή.*/\1/p' "${cacheDir}"/namedays.xml)")
-DayAfterTomorrowNames=$(ColorWrapNames "$(sed -n '/μεθαύριο/s/^.*: \(.*\) (πηγή.*/\1/p' "${cacheDir}"/namedays.xml)")
+TodayNames=$(ColorWrapNames "$(sed -n '/^σήμερα/s/^.[^:]*: \(.*\) (πηγή.*/\1/p' "${cacheDir}"/namedays.xml)")
+TomorrowNames=$(ColorWrapNames "$(sed -n '/^αύριο/s/^.[^:]*: \(.*\) (πηγή.*/\1/p' "${cacheDir}"/namedays.xml)")
+DayAfterTomorrowNames=$(ColorWrapNames "$(sed -n '/^μεθαύριο/s/^.[^:]*: \(.*\) (πηγή.*/\1/p' "${cacheDir}"/namedays.xml)")
 
 yad --width=500 \
     --center \
     --timeout=60 \
     --timeout-indicator=left \
     --title=$"Ελληνικές Ονομαστικές Εορτές, έκδ. ${version}" \
-    --window-icon=Christian-cross \
-    --image=Christian-cross \
+    --window-icon=greeknamedays \
+    --image=greeknamedays \
     --buttons-layout=center \
     --button=Κλείσιμο \
-    --text=$"<span color='blue' font_size='medium' font_weight='bold'>Σήμερα ${WDITD}</span>\n${TodayNames}
+    --text=$"<span color='blue' font_size='medium' font_weight='bold'>Σήμερα, ${WDITD}</span>\n${TodayNames}
 
-<span color='blue' font_size='medium' font_weight='bold'>Αύριο ${WDITM}</span>\n${TomorrowNames}
+<span color='blue' font_size='medium' font_weight='bold'>Αύριο, ${WDITM}</span>\n${TomorrowNames}
 
-<span color='blue' font_size='medium' font_weight='bold'>Μεθαύριο ${WDIDATM}</span>\n${DayAfterTomorrowNames}\
+<span color='blue' font_size='medium' font_weight='bold'>Μεθαύριο, ${WDIDATM}</span>\n${DayAfterTomorrowNames}\
 $([[ "${WDITD}" =~ "$(date +"%a")" ]] || echo -en "\n\n<span color='red' underline='error'>Πιθανό πρόβλημα. Ασύμπτωτες ημερομηνίες!</span>")"
 
 CleanUp

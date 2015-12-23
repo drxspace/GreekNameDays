@@ -1,5 +1,5 @@
 # GreekNameDays
-Orthodox Namedays retrieval and presentation tool
+Orthodox Namedays retrieval and presentation tool.
 
 ## Description
 GreekNameDays is a bash script that fetches the names of those who celebrate
@@ -17,7 +17,7 @@ and issue the command below.
 
 ```bash
 sudo -H sh -c '
-	cp -fv Christian-cross.png /usr/share/pixmaps/
+	cp -fv greeknamedays.png /usr/share/pixmaps/
 	cp -fv greeknamedays.sh /usr/local/bin/greeknamedays
 	desktop-file-install greeknamedays.desktop
 '
@@ -30,8 +30,8 @@ Open terminal and issue the command below.
 
 ```bash
 sudo -H sh -c '
-	rm -fv /usr/share/applicationsgreeknamedays.desktop
-	rm -fv /usr/share/pixmaps/Christian-cross.png
+	rm -fv /usr/share/applications/greeknamedays.desktop
+	rm -fv /usr/share/pixmaps/greeknamedays.png
 	rm -fv /usr/local/bin/greeknamedays
 '
 ```
