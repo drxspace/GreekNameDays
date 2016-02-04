@@ -16,7 +16,7 @@ and issue the command below.
 ### All
 
 ```bash
-sudo -H sh -c '
+sudo sh -c '
 	cp -fv greeknamedays.png /usr/share/pixmaps/
 	cp -fv greeknamedays.sh /usr/local/bin/greeknamedays
 	desktop-file-install greeknamedays.desktop
@@ -29,7 +29,7 @@ Open terminal and issue the command below.
 ### All
 
 ```bash
-sudo -H sh -c '
+sudo sh -c '
 	rm -fv /usr/share/applications/greeknamedays.desktop
 	rm -fv /usr/share/pixmaps/greeknamedays.png
 	rm -fv /usr/local/bin/greeknamedays
