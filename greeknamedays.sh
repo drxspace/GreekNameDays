@@ -38,7 +38,7 @@ ColorWrapNames () {
 	if [[ $(grep "δεν υπάρχει μια" <<< "${1}" 2> /dev/null) ]]; then
 		echo -n "<span color='#E39700'>Δεν υπάρχει κάποια ευρέως γνωστή γιορτή</span>";
 	else
-		echo -n "<span color='#246C48' font_size='large'>${1}</span>";
+		echo -n "<span color='#0A0A0A' font_size='large'>${1}</span>";
 	fi
 }
 
