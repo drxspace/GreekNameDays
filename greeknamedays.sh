@@ -20,18 +20,16 @@ Encoding=UTF-8
 cacheDir="$HOME/.cache/NameDays"
 
 # Getting access to the display
-#if [[ -z "$DISPLAY" ]]; then
-#	export DISPLAY=$(/bin/ps -Afl | /bin/grep Xorg | /bin/grep -v grep | /usr/bin/awk '{print $16 ".0"}');
-#fi
-#if [[ -z "$XAUTHORITY" ]] && [[ -e "$HOME/.Xauthority" ]]; then
-#	export XAUTHORITY="$HOME/.Xauthority";
-#fi
+LANG=en_US.UTF-8
+[[ -z "$DISPLAY" ]] && export DISPLAY=:0;
+[[ -z "$XAUTHORITY" ]] && [[ -e "$HOME/.Xauthority" ]] && export XAUTHORITY="$HOME/.Xauthority";
 
 # Prerequisites
-[[ -x $(which yad) ]] || {
+#[[ -x $(which yad) ]] || {
+if ! hash yad &>/dev/null; then
 	notify-send "Greek NameDays" "yad command is missing\nUse sudo apt-get install yad to install it" -i face-embarrassed;
 	exit 1;
-}
+fi
 
 # ColorWrapNames function
 ColorWrapNames () {
@@ -56,6 +54,8 @@ mkdir -p "${cacheDir}"
 yad --image=info \
     --width=520 \
     --height=80 \
+    --borders=10 \
+    --image-on-top \
     --center \
     --no-buttons \
     --timeout=20 \
@@ -79,6 +79,8 @@ eval 'kill -15 ${INFOpid}' &> /dev/null
 	echo "Error while retrieving names from server." 1>&2
 	yad --image=error \
 	    --width=520 \
+	    --borders=10 \
+	    --image-on-top \
 	    --center \
 	    --buttons-layout=center \
 	    --button=Κλείσιμο \
@@ -103,6 +105,8 @@ TomorrowNames=$(ColorWrapNames "$(sed -n '/^αύριο/s/^.[^:]*: \(.*\) (πηγ
 DayAfterTomorrowNames=$(ColorWrapNames "$(sed -n '/^μεθαύριο/s/^.[^:]*: \(.*\) (πηγή.*/\1/p' "${cacheDir}"/namedays.xml)")
 
 yad --width=500 \
+    --borders=10 \
+    --image-on-top \
     --center \
     --timeout=60 \
     --timeout-indicator=left \
