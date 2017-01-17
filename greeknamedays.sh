@@ -31,6 +31,11 @@ if ! hash yad &>/dev/null; then
 	exit 1;
 fi
 
+# CleanUp function
+CleanUp () {
+	rm -rf "${cacheDir}"
+}
+
 # ColorWrapNames function
 ColorWrapNames () {
 	if [[ $(grep "δεν υπάρχει μια" <<< "${1}" 2> /dev/null) ]]; then
@@ -40,15 +45,13 @@ ColorWrapNames () {
 	fi
 }
 
-# CleanUp function
-CleanUp () {
-	rm -rf "${cacheDir}"
-}
+eortologioRSS="http://www.eortologio.gr/rss/si_av_me_el.xml"
 
 ####
 #
 # main
 #
+
 mkdir -p "${cacheDir}"
 
 yad --image=info \
@@ -70,7 +73,7 @@ touch "${cacheDir}/names"
 secs=1					# Set interval (duration) in seconds.
 endTime=$(( $(date +%s) + secs ))	# Calculate end time.
 while [[ ! -s "${cacheDir}/names" ]] && [[ $(date +%s) -lt $endTime ]]; do
-	wget -q -N -4 -O "${cacheDir}/names" http://www.eortologio.gr/rss/si_av_me_el.xml;
+	wget -q -N -4 -O "${cacheDir}/names" ${eortologioRSS};
 done
 
 eval 'kill -15 ${INFOpid}' &> /dev/null
@@ -92,9 +95,9 @@ eval 'kill -15 ${INFOpid}' &> /dev/null
 }
 
 iconv -f ISO-8859-7 -t UTF-8 "${cacheDir}/names" | \
-sed 's/>[:space:]*</>\n</g' | \
-sed '/<item>/,/<\/item>/!d' | \
-sed -n 's/.*<title>\(.*\)<\/title>.*/\1/p' > "${cacheDir}"/namedays.xml
+	sed 's/>[[:space:]]*</>\n</g' | \
+	sed '/<item>/,/<\/item>/!d' | \
+	sed -n 's/.*<title>\(.*\)<\/title>.*/\1/p' > "${cacheDir}"/namedays.xml
 
 WDITD="$(sed -n '/^σήμερα/s/σήμερα[[:space:]]\(.[^:]*\)[[:space:]].*/\1/p' "${cacheDir}"/namedays.xml)"
 WDITM="$(sed -n '/^αύριο/s/αύριο[[:space:]]\(.[^:]*\)[[:space:]].*/\1/p' "${cacheDir}"/namedays.xml)"
