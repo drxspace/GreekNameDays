@@ -68,7 +68,7 @@ yad --image=info \
 Παρακαλώ περιμένετε..." &
 INFOpid=$(echo $!)
 
-touch "${cacheDir}/names"
+cat /dev/null > "${cacheDir}/names"
 
 secs=1					# Set interval (duration) in seconds.
 endTime=$(( $(date +%s) + secs ))	# Calculate end time.
@@ -76,7 +76,7 @@ while [[ ! -s "${cacheDir}/names" ]] && [[ $(date +%s) -lt $endTime ]]; do
 	wget -q -N -4 -O "${cacheDir}/names" ${eortologioRSS};
 done
 
-eval 'kill -15 ${INFOpid}' &> /dev/null
+eval "kill -15 ${INFOpid}" &> /dev/null
 
 [[ ! -s "${cacheDir}/names" ]] && {
 	echo "Error while retrieving names from server." 1>&2
