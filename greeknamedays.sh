@@ -9,7 +9,7 @@
 #
 #set -e
 
-version='0.2.6'
+version='0.2.8'
 
 Encoding=UTF-8
 
@@ -54,7 +54,8 @@ eortologioRSS="http://www.eortologio.gr/rss/si_av_me_el.xml"
 
 mkdir -p "${cacheDir}"
 
-yad --image=info \
+yad --form \
+    --image=info \
     --width=520 \
     --height=80 \
     --borders=10 \
@@ -70,9 +71,9 @@ INFOpid=$(echo $!)
 
 cat /dev/null > "${cacheDir}/names"
 
-secs=1					# Set interval (duration) in seconds.
+secs=20					# Set interval (duration) in seconds.
 endTime=$(( $(date +%s) + secs ))	# Calculate end time.
-while [[ ! -s "${cacheDir}/names" ]] && [[ $(date +%s) -lt $endTime ]]; do
+while [[ ! -s "${cacheDir}/names" ]] && [[ $(date +%s) -le $endTime ]]; do
 	wget -q -N -4 -O "${cacheDir}/names" ${eortologioRSS};
 done
 
@@ -80,7 +81,8 @@ eval "kill -15 ${INFOpid}" &> /dev/null
 
 [[ ! -s "${cacheDir}/names" ]] && {
 	echo "Error while retrieving names from server." 1>&2
-	yad --image=error \
+	yad --form \
+	    --image=error \
 	    --width=520 \
 	    --borders=10 \
 	    --image-on-top \
@@ -107,7 +109,8 @@ TodayNames=$(ColorWrapNames "$(sed -n '/^σήμερα/s/^.[^:]*: \(.*\) (πηγ�
 TomorrowNames=$(ColorWrapNames "$(sed -n '/^αύριο/s/^.[^:]*: \(.*\) (πηγή.*/\1/p' "${cacheDir}"/namedays.xml)")
 DayAfterTomorrowNames=$(ColorWrapNames "$(sed -n '/^μεθαύριο/s/^.[^:]*: \(.*\) (πηγή.*/\1/p' "${cacheDir}"/namedays.xml)")
 
-yad --width=500 \
+yad --form \
+    --width=500 \
     --borders=10 \
     --image-on-top \
     --center \
