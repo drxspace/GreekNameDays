@@ -9,9 +9,14 @@
 #
 #set -e
 
-version='0.2.8'
+version='0.2.9'
 
 Encoding=UTF-8
+
+# Getting access to the display
+LANG=en_US.UTF-8
+[[ -z "$DISPLAY" ]] && export DISPLAY=:0;
+[[ -z "$XAUTHORITY" ]] && [[ -e "$HOME/.Xauthority" ]] && export XAUTHORITY="$HOME/.Xauthority";
 
 # The directory this script resides
 #scriptDir="$(dirname "$0")"
@@ -19,10 +24,8 @@ Encoding=UTF-8
 # Store temporary data in this directory
 cacheDir="$HOME/.cache/NameDays"
 
-# Getting access to the display
-LANG=en_US.UTF-8
-[[ -z "$DISPLAY" ]] && export DISPLAY=:0;
-[[ -z "$XAUTHORITY" ]] && [[ -e "$HOME/.Xauthority" ]] && export XAUTHORITY="$HOME/.Xauthority";
+# Server uri
+eortologioRSS="http://www.eortologio.gr/rss/si_av_me_el.xml"
 
 # Prerequisites
 #[[ -x $(which yad) ]] || {
@@ -45,8 +48,6 @@ ColorWrapNames () {
 	fi
 }
 
-eortologioRSS="http://www.eortologio.gr/rss/si_av_me_el.xml"
-
 ####
 #
 # main
@@ -57,7 +58,7 @@ mkdir -p "${cacheDir}"
 yad --form \
     --image=info \
     --width=520 \
-    --height=80 \
+    --height=50 \
     --borders=10 \
     --image-on-top \
     --center \
@@ -84,6 +85,7 @@ eval "kill -15 ${INFOpid}" &> /dev/null
 	yad --form \
 	    --image=error \
 	    --width=520 \
+	    --height=50 \
 	    --borders=10 \
 	    --image-on-top \
 	    --center \
@@ -111,6 +113,7 @@ DayAfterTomorrowNames=$(ColorWrapNames "$(sed -n '/^μεθαύριο/s/^.[^:]*: 
 
 yad --form \
     --width=500 \
+    --height=400 \
     --borders=10 \
     --image-on-top \
     --center \
