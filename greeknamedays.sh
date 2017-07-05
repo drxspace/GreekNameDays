@@ -9,7 +9,7 @@
 #
 #set -e
 
-version='0.2.9'
+version='0.3.1'
 
 Encoding=UTF-8
 
@@ -54,23 +54,24 @@ ColorWrapNames () {
 #
 
 mkdir -p "${cacheDir}"
+cat /dev/null > "${cacheDir}/names"
 
 yad --form \
-    --image=info \
-    --width=520 \
+    --width=420 \
     --height=50 \
+    --fixed \
     --borders=10 \
+    --window-icon="/usr/share/pixmaps/greeknamedays.png" \
+    --image="dialog-information" \
     --image-on-top \
     --center \
     --no-buttons \
     --timeout=20 \
-    --timeout-indicator=bottom \
+    --timeout-indicator="bottom" \
     --title=$"Ελληνικές Ονομαστικές Εορτές, έκδ. ${version}" \
     --text=$"Γίνεται ανάκτηση τυχόν ονομάτων από τον ιστότοπο <a href='http://www.eortologio.gr/'>www.eortologio.gr</a>
 Παρακαλώ περιμένετε..." &
 INFOpid=$(echo $!)
-
-cat /dev/null > "${cacheDir}/names"
 
 secs=20					# Set interval (duration) in seconds.
 endTime=$(( $(date +%s) + secs ))	# Calculate end time.
@@ -83,16 +84,18 @@ eval "kill -15 ${INFOpid}" &> /dev/null
 [[ ! -s "${cacheDir}/names" ]] && {
 	echo "Error while retrieving names from server." 1>&2
 	yad --form \
-	    --image=error \
-	    --width=520 \
+	    --width=420 \
 	    --height=50 \
+	    --fixed \
 	    --borders=10 \
+	    --window-icon="/usr/share/pixmaps/greeknamedays.png" \
+	    --image="dialog-error" \
 	    --image-on-top \
 	    --center \
-	    --buttons-layout=center \
-	    --button=Κλείσιμο \
+	    --buttons-layout="center" \
+	    --button=$"Κλείσιμο!window-close!Κλείνει το παράθυρο:1" \
 	    --title=$"Ελληνικές Ονομαστικές Εορτές, έκδ. ${version}" \
-	    --text=$"Η ανάκτηση τυχόν ονομάτων από τον ιστότοπο <a href='http://www.eortologio.gr/'>www.eortologio.gr</a> δεν κατέστη δυνατή.\n
+	    --text=$"Η ανάκτηση τυχόν ονομάτων από τον ιστότοπο <a href='http://www.eortologio.gr/'>www.eortologio.gr</a> δεν κατέστη δυνατή.
 Παρακαλώ ελέγξτε τη σύνδεσή σας στο διαδίκτυο και/ή δοκιμάστε αργότερα..."
 	CleanUp;
 	exit 2;
@@ -112,18 +115,18 @@ TomorrowNames=$(ColorWrapNames "$(sed -n '/^αύριο/s/^.[^:]*: \(.*\) (πηγ
 DayAfterTomorrowNames=$(ColorWrapNames "$(sed -n '/^μεθαύριο/s/^.[^:]*: \(.*\) (πηγή.*/\1/p' "${cacheDir}"/namedays.xml)")
 
 yad --form \
-    --width=500 \
-    --height=400 \
+    --width=420 \
+    --height=100 \
     --borders=10 \
-    --image-on-top \
     --center \
     --timeout=60 \
-    --timeout-indicator=left \
+    --timeout-indicator="left" \
     --title=$"Ελληνικές Ονομαστικές Εορτές, έκδ. ${version}" \
-    --window-icon=greeknamedays \
-    --image=greeknamedays \
-    --buttons-layout=center \
-    --button=Κλείσιμο \
+    --window-icon="/usr/share/pixmaps/greeknamedays.png" \
+    --image="/usr/share/pixmaps/greeknamedays.png" \
+    --image-on-top \
+    --buttons-layout="center" \
+    --button=$"Κλείσιμο!window-close!Κλείνει το παράθυρο:0" \
     --text=$"<span color='blue' font_size='medium' font_weight='bold'>Σήμερα, ${WDITD}</span>\n${TodayNames}\n
 <span color='blue' font_size='medium' font_weight='bold'>Αύριο, ${WDITM}</span>\n${TomorrowNames}\n
 <span color='blue' font_size='medium' font_weight='bold'>Μεθαύριο, ${WDIDATM}</span>\n${DayAfterTomorrowNames}\
