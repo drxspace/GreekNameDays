@@ -116,21 +116,21 @@ DayAfterTomorrowNames=$(ColorWrapNames "$(sed -n '/^μεθαύριο/s/^.[^:]*: 
 
 yad --form \
     --width=420 \
-    --height=100 \
     --borders=10 \
     --center \
     --timeout=60 \
     --timeout-indicator="left" \
     --title=$"Ελληνικές Ονομαστικές Εορτές, έκδ. ${version}" \
     --window-icon="/usr/share/pixmaps/greeknamedays.png" \
-    --image="/usr/share/pixmaps/greeknamedays.png" \
     --image-on-top \
-    --buttons-layout="center" \
-    --button=$"Κλείσιμο!window-close!Κλείνει το παράθυρο:0" \
+    --image="/usr/share/pixmaps/greeknamedays.png" \
     --text=$"<span color='blue' font_size='medium' font_weight='bold'>Σήμερα, ${WDITD}</span>\n${TodayNames}\n
 <span color='blue' font_size='medium' font_weight='bold'>Αύριο, ${WDITM}</span>\n${TomorrowNames}\n
 <span color='blue' font_size='medium' font_weight='bold'>Μεθαύριο, ${WDIDATM}</span>\n${DayAfterTomorrowNames}\
-$([[ "${WDITD}" =~ "$(date +"%a")" ]] || echo -en "\n\n<span color='red' underline='error'>Πιθανό πρόβλημα. Ασύμπτωτες ημερομηνίες!</span>")"
+$([[ "${WDITD}" =~ "$(date +"%a")" ]] || echo -en "\n\n<span color='red' underline='error'>Πιθανό πρόβλημα. Ασύμπτωτες ημερομηνίες!</span>")" \
+    --dialog-sep \
+    --buttons-layout="center" \
+    --button=$"Κλείσιμο!window-close!Κλείνει το παράθυρο:0"
 
 CleanUp
 
