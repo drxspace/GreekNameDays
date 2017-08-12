@@ -8,8 +8,9 @@
 #                                    /_/           drxspace@gmail.com
 #
 #set -e
+#set -x
 
-version='0.3.1'
+version='0.3.7'
 
 Encoding=UTF-8
 
@@ -24,6 +25,9 @@ LANG=en_US.UTF-8
 # Store temporary data in this directory
 cacheDir="$HOME/.cache/NameDays"
 
+# Cleaner trap
+trap "rm -rf ${cacheDir} &>/dev/null" EXIT
+
 # Server uri
 eortologioRSS="http://www.eortologio.gr/rss/si_av_me_el.xml"
 
@@ -34,18 +38,22 @@ if ! hash yad &>/dev/null; then
 	exit 1;
 fi
 
-# CleanUp function
-CleanUp () {
-	rm -rf "${cacheDir}"
+# wrapText () function that wraps the given string if it's >N chars
+wrapText () {
+	local wrapChar=$(( 40 * 2 ))
+	echo "${1}" | fold -s -w ${2-${wrapChar}}
+	# | sed -e 's/[[:blank:]]*//g' | sed -e 's/[[:blank:]]*$/\\n/' | sed -e 's/^[[:blank:]]*//'
+	return
 }
 
-# ColorWrapNames function
-ColorWrapNames () {
+# ColourizeNames function
+ColourizeNames () {
 	if [[ $(grep "δεν υπάρχει μια" <<< "${1}" 2> /dev/null) ]]; then
 		echo -n "<span color='#E39700'>Δεν υπάρχει κάποια ευρέως γνωστή γιορτή</span>";
 	else
 		echo -n "<span color='#0A0A0A' font_size='large'>${1}</span>";
 	fi
+	return
 }
 
 ####
@@ -57,16 +65,15 @@ mkdir -p "${cacheDir}"
 cat /dev/null > "${cacheDir}/names"
 
 yad --form \
-    --width=420 \
-    --height=50 \
+    --width="420" \
     --fixed \
-    --borders=10 \
+    --borders="10" \
     --window-icon="/usr/share/pixmaps/greeknamedays.png" \
     --image="dialog-information" \
     --image-on-top \
     --center \
     --no-buttons \
-    --timeout=20 \
+    --timeout="20" \
     --timeout-indicator="bottom" \
     --title=$"Ελληνικές Ονομαστικές Εορτές, έκδ. ${version}" \
     --text=$"Γίνεται ανάκτηση τυχόν ονομάτων από τον ιστότοπο <a href='http://www.eortologio.gr/'>www.eortologio.gr</a>
@@ -84,10 +91,9 @@ eval "kill -15 ${INFOpid}" &> /dev/null
 [[ ! -s "${cacheDir}/names" ]] && {
 	echo "Error while retrieving names from server." 1>&2
 	yad --form \
-	    --width=420 \
-	    --height=50 \
+	    --width="420" \
 	    --fixed \
-	    --borders=10 \
+	    --borders="10" \
 	    --window-icon="/usr/share/pixmaps/greeknamedays.png" \
 	    --image="dialog-error" \
 	    --image-on-top \
@@ -97,41 +103,35 @@ eval "kill -15 ${INFOpid}" &> /dev/null
 	    --title=$"Ελληνικές Ονομαστικές Εορτές, έκδ. ${version}" \
 	    --text=$"Η ανάκτηση τυχόν ονομάτων από τον ιστότοπο <a href='http://www.eortologio.gr/'>www.eortologio.gr</a> δεν κατέστη δυνατή.
 Παρακαλώ ελέγξτε τη σύνδεσή σας στο διαδίκτυο και/ή δοκιμάστε αργότερα..."
-	CleanUp;
 	exit 2;
 }
 
 iconv -f ISO-8859-7 -t UTF-8 "${cacheDir}/names" | \
-	sed 's/>[[:space:]]*</>\n</g' | \
+	sed 's/>[[:blank:]]*</>\n</g' | \
 	sed '/<item>/,/<\/item>/!d' | \
 	sed -n 's/.*<title>\(.*\)<\/title>.*/\1/p' > "${cacheDir}"/namedays.xml
 
-WDITD="$(sed -n '/^σήμερα/s/σήμερα[[:space:]]\(.[^:]*\)[[:space:]].*/\1/p' "${cacheDir}"/namedays.xml)"
-WDITM="$(sed -n '/^αύριο/s/αύριο[[:space:]]\(.[^:]*\)[[:space:]].*/\1/p' "${cacheDir}"/namedays.xml)"
-WDIDATM="$(sed -n '/^μεθαύριο/s/μεθαύριο[[:space:]]\(.[^:]*\)[[:space:]].*/\1/p' "${cacheDir}"/namedays.xml)"
+WDITD="$(sed -n '/^σήμερα/s/σήμερα[[:blank:]]\(.[^:]*\)[[:blank:]].*/\1/p' "${cacheDir}"/namedays.xml)"
+WDITM="$(sed -n '/^αύριο/s/αύριο[[:blank:]]\(.[^:]*\)[[:blank:]].*/\1/p' "${cacheDir}"/namedays.xml)"
+WDIDATM="$(sed -n '/^μεθαύριο/s/μεθαύριο[[:blank:]]\(.[^:]*\)[[:blank:]].*/\1/p' "${cacheDir}"/namedays.xml)"
 
-TodayNames=$(ColorWrapNames "$(sed -n '/^σήμερα/s/^.[^:]*: \(.*\) (πηγή.*/\1/p' "${cacheDir}"/namedays.xml)")
-TomorrowNames=$(ColorWrapNames "$(sed -n '/^αύριο/s/^.[^:]*: \(.*\) (πηγή.*/\1/p' "${cacheDir}"/namedays.xml)")
-DayAfterTomorrowNames=$(ColorWrapNames "$(sed -n '/^μεθαύριο/s/^.[^:]*: \(.*\) (πηγή.*/\1/p' "${cacheDir}"/namedays.xml)")
+TodayNames="$(ColourizeNames "$(wrapText "$(sed -n '/^σήμερα/s/^.[^:]*:.\(.*\)..πηγή.*/\1/p' "${cacheDir}"/namedays.xml)")")"
+TomorrowNames="$(ColourizeNames "$(wrapText "$(sed -n '/^αύριο/s/^.[^:]*:.\(.*\)..πηγή.*/\1/p' "${cacheDir}"/namedays.xml)")")"
+DayAfterTomorrowNames="$(ColourizeNames "$(wrapText "$(sed -n '/^μεθαύριο/s/^.[^:]*:.\(.*\)..πηγή.*/\1/p' "${cacheDir}"/namedays.xml)")")"
 
 yad --form \
-    --width=420 \
-    --borders=10 \
+    --width="400" \
+    --borders="10" \
     --center \
-    --timeout=60 \
+    --timeout="60" \
     --timeout-indicator="left" \
     --title=$"Ελληνικές Ονομαστικές Εορτές, έκδ. ${version}" \
     --window-icon="/usr/share/pixmaps/greeknamedays.png" \
     --image-on-top \
     --image="/usr/share/pixmaps/greeknamedays.png" \
-    --text=$"<span color='blue' font_size='medium' font_weight='bold'>Σήμερα, ${WDITD}</span>\n${TodayNames}\n
-<span color='blue' font_size='medium' font_weight='bold'>Αύριο, ${WDITM}</span>\n${TomorrowNames}\n
-<span color='blue' font_size='medium' font_weight='bold'>Μεθαύριο, ${WDIDATM}</span>\n${DayAfterTomorrowNames}\
-$([[ "${WDITD}" =~ "$(date +"%a")" ]] || echo -en "\n\n<span color='red' underline='error'>Πιθανό πρόβλημα. Ασύμπτωτες ημερομηνίες!</span>")" \
-    --dialog-sep \
     --buttons-layout="center" \
-    --button=$"Κλείσιμο!window-close!Κλείνει το παράθυρο:0"
-
-CleanUp
+    --button=$"Κλείσιμο!window-close!Κλείνει το παράθυρο:0" \
+    --text=$"<span color='blue' font_size='medium' font_weight='bold'>Σήμερα, ${WDITD}</span>\n${TodayNames}\n\n<span color='blue' font_size='medium' font_weight='bold'>Αύριο, ${WDITM}</span>\n${TomorrowNames}\n\n<span color='blue' font_size='medium' font_weight='bold'>Μεθαύριο, ${WDIDATM}</span>\n${DayAfterTomorrowNames}\n\
+$([[ "${WDITD}" =~ "$(date +"%a")" ]] || echo -en "\n<span color='red' underline='error'>Πιθανό πρόβλημα. Ασύμπτωτες ημερομηνίες!</span>\n")"
 
 exit 0
