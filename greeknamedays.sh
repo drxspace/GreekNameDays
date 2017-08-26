@@ -10,7 +10,7 @@
 #set -e
 #set -x
 
-version='0.3.7'
+version='0.3.8'
 
 Encoding=UTF-8
 
@@ -66,7 +66,6 @@ cat /dev/null > "${cacheDir}/names"
 
 yad --form \
     --width="420" \
-    --fixed \
     --borders="10" \
     --window-icon="/usr/share/pixmaps/greeknamedays.png" \
     --image="dialog-information" \
@@ -92,7 +91,6 @@ eval "kill -15 ${INFOpid}" &> /dev/null
 	echo "Error while retrieving names from server." 1>&2
 	yad --form \
 	    --width="420" \
-	    --fixed \
 	    --borders="10" \
 	    --window-icon="/usr/share/pixmaps/greeknamedays.png" \
 	    --image="dialog-error" \
@@ -120,7 +118,7 @@ TomorrowNames="$(ColourizeNames "$(wrapText "$(sed -n '/^αύριο/s/^.[^:]*:.\
 DayAfterTomorrowNames="$(ColourizeNames "$(wrapText "$(sed -n '/^μεθαύριο/s/^.[^:]*:.\(.*\)..πηγή.*/\1/p' "${cacheDir}"/namedays.xml)")")"
 
 yad --form \
-    --width="400" \
+    --width="420" \
     --borders="10" \
     --center \
     --timeout="60" \
