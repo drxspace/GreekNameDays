@@ -10,13 +10,15 @@
 #set -e
 #set -x
 
-version='0.3.8'
+version='0.4.2'
 
+# Make sure your DISPLAY and XAUTHORITY variables are set in the environment the script is running in
 Encoding=UTF-8
-
-# Getting access to the display
 LANG=en_US.UTF-8
-[[ -z "$DISPLAY" ]] && export DISPLAY=:0;
+[[ -z "$DISPLAY" ]] && {
+	display=`/bin/ps -Afl | /bin/grep Xorg | /bin/grep -v grep | /usr/bin/awk '{print $16 ".0"}'`
+	export DISPLAY=$display
+}
 [[ -z "$XAUTHORITY" ]] && [[ -e "$HOME/.Xauthority" ]] && export XAUTHORITY="$HOME/.Xauthority";
 
 # The directory this script resides
@@ -26,7 +28,7 @@ LANG=en_US.UTF-8
 cacheDir="$HOME/.cache/NameDays"
 
 # Cleaner trap
-trap "rm -rf ${cacheDir} &>/dev/null" EXIT
+trap 'rm -rf ${cacheDir}' EXIT
 
 # Server uri
 eortologioRSS="http://www.eortologio.gr/rss/si_av_me_el.xml"
